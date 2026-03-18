@@ -19,23 +19,46 @@ public class Main {
                     displayProduct(db);
                     break;
                 case 3:
-                    System.out.print("Nhập ID sản phẩm cần cập nhật: ");
-                    String update = sc.nextLine();
-                    Product p = db.findById(update);
-                    if (p != null) {
-                        System.out.printf("Nhập tên mới (hiện tại: %s): ", p.getName());
-                        p.setName(sc.nextLine());
-                        System.out.printf("Nhập giá mới (hiện tại: %.2f): ",  p.getPrice());
-                        p.setPrice(sc.nextDouble());
-                        System.out.printf("");
-                    }
+                    updateProduct(sc, db);
                 case 4:
+                    deleteProduct(sc, db);
+                    break;
                 case 5:
+                    System.out.printf("Đang thoát chương trình !!!!!");
+                    sc.close();
+                    break;
                 default:
                     System.out.println("Lựa chọn không hợp lệ");
                     break;
             }
         }while (choice != 5);
+    }
+
+    // case 3: Cập nhật sản phẩm theo ID
+    private static void updateProduct(Scanner sc, ProductDatabase db) {
+        System.out.print("Nhập ID sản phẩm cần cập nhật: ");
+        String update = sc.nextLine();
+        Product p = db.findById(update);
+        if (p != null) {
+            System.out.print("Tên mới: "); p.setName(sc.nextLine());
+            System.out.print("Giá mới: "); p.setPrice(sc.nextDouble());
+            if (p instanceof PhysicalProduct) {
+                System.out.print("Trọng lượng mới: "); ((PhysicalProduct) p).setWeight(sc.nextDouble());
+            } else {
+                System.out.print("Dung lượng mới: "); ((DigitalProduct) p).setSize(sc.nextDouble());
+            }
+        } else {
+            System.out.println("Không tìm thấy!");
+        }
+    }
+
+    // case 4: Xóa sản phẩm theo ID
+    private static void deleteProduct(Scanner sc, ProductDatabase db) {
+        System.out.print("Nhập ID cần xóa: ");
+        String delId = sc.nextLine();
+        if (db.deleteProduct(delId)) System.out.println("Đã xóa.");
+        else System.out.println("Thất bại!");
+        return;
     }
 
     // case 2: Hiển thị danh sách sản phẩm
